@@ -1,5 +1,5 @@
-<h1>Dependicies</h1>
+<h1>Dependicies</h1
 
-Electron.js
-Node.js
+Electron.js <br>
+Node.js <br>
 Desktop Application
