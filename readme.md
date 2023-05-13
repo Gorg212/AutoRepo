@@ -1,5 +1,12 @@
-<h1>Dependicies</h1
+# Dependicies
 
-Electron.js <br>
-Node.js <br>
-Desktop Application
+- Electron.js
+- Node.js 
+- Desktop Application
+
+## npm packages
+
+- open
+- child_process
+- octokit
+- prompt-sync
