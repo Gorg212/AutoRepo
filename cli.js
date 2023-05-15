@@ -5,6 +5,7 @@ const input = require('prompt-sync')({ sigint: true });
 const { Octokit } = require('octokit');
 const fetch = require('node-fetch');
 const { exec } = require('child_process');
+const request = require('sync-request');
 
 // checking for auth.json
 if (!fs.existsSync('auth.json')) {
@@ -19,8 +20,18 @@ if (!fs.existsSync('auth.json')) {
 
     const token = input('token: ')
 
-    // saving to auth.json
-    const authData = JSON.stringify({ 'token': token });
+    const res = request('GET', 'https://api.github.com/user', {
+        headers: {
+            'User-Agent': 'node.js',
+            'Authorization': `token ${token}`
+        }
+    });
+
+    const username = JSON.parse(res.getBody('utf8')).login;
+
+    console.log(username);
+
+    const authData = JSON.stringify({ 'token': token, 'username': username });
 
     fs.writeFileSync('auth.json', authData, (err) => {
         if (err) {
@@ -30,17 +41,19 @@ if (!fs.existsSync('auth.json')) {
         console.log('File created successfully');
     });
 
-
 }
 
-// retrieving contents
-const data = fs.readFileSync('auth.json', 'utf8');
-const token = JSON.parse(data).token;
+// retrieving token
 
 const repoName = input("Repo Name: ");
 const repoDescription = input("Repo description (optional): ");
 
-
+const data = fs.readFileSync('auth.json', (data) => {
+    console.log(data.data.login);
+    process.exit(0);
+});
+const token = JSON.parse(data).token;
+// making repo
 fetch('https://api.github.com/user/repos', {
     method: 'POST',
     headers: {
@@ -57,3 +70,9 @@ fetch('https://api.github.com/user/repos', {
     })
     .then(data => console.log(data))
     .catch(error => console.error(error));
+
+console.log('Repository created successfully. Cloning now');
+
+
+// TODO: CLONE THIS STUPID REPO RISHI
+// exec(`git clone https://github.com/`)
